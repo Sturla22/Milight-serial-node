@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var io = require('socket.io');
+var exec = require('child_process').exec
 // var SerialPort = require("serialport").SerialPort
 // var serialPort = new SerialPort("/dev/ttyAMA0", {
 //   baudrate: 9600
