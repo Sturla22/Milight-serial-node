@@ -18,7 +18,6 @@ var brightness = 0, //static variables to hold the current values
 serv_io.sockets.on('connection', function (socket) {
 	socket.on('Color', function (data) { //makes the socket react to 'led' packets by calling this function
 		console.log(data.color+" "+data.brightness);
-		
 		serv_io.sockets.emit('Color',{
 	    	color:data.color,
 	    	brightness:data.brightness
@@ -31,9 +30,10 @@ serv_io.sockets.on('connection', function (socket) {
 	    });
 	});
 	socket.on('On',function (data){
-		var buf = new Buffer(3); //creates a new 1-byte buffer
-		buf.writeUInt8(String.fromCharCode(71,0,85), 0);
-		serialPort.write(buf); //transmits the buffer to the arduino
+		// var buf = new Buffer(3); //creates a new 3-byte buffer
+		// buf.writeUInt8(String.fromCharCode(71,0,85), 0); //TODO: make a js object for the limitlessled API
+		// serialPort.write(buf); //writes the buffer to serial
+		exec("python /home/pi/Milight/Milight.py");
 		console.log("On");
 	});
 	socket.on('Off',function (data){
