@@ -53,7 +53,7 @@
 		  		<div id="color-slider"></div>
 		  		<br>
 		  		<div class="text-center">
-		  			<button type="button" id="all" class="btn btn-default btn-lg groupBtn">ALL</button>
+		  			<button type="button" id="all" class="btn btn-success btn-lg groupBtn">ALL</button>
 	  				<button type="button" id="ch1" class="btn btn-default btn-lg groupBtn">CH 1</button>
 					<button type="button" id="ch2" class="btn btn-default btn-lg groupBtn">CH 2</button>
 					<button type="button" id="ch3" class="btn btn-default btn-lg groupBtn">CH 3</button>
@@ -74,9 +74,12 @@
 	<!-- Socket.io -->
 	<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>
 	<script type="text/javascript" charset="utf-8" async defer>
+  	  var White = 1,
+  	  	  currentGroup = 0,
+  	  	  color = 0,
+  	  	  colorBrightness = 25,
+  	  	  whiteBrightness = 25;
 	  var socket = io.connect();
-	  var White = 1;
-	  var currentGroup = 0;
 	  function refreshColor(){
 	  	var h = parseInt($( "#color-slider" ).slider( "value" )*(360/255)),
 	  		s = 50,
@@ -99,6 +102,21 @@
 	    });
 	  }
 	  $(function() {
+	  	socket.emit('ready');
+	  	socket.on('Welcome',function(data){
+		  White = data.white;
+		  currentGroup = data.group;
+		  color = data.color;
+		  colorBrightness = data.colorBrightness;
+		  whiteBrightness = data.whiteBrightness;
+		  if(White){
+			$( "#brightness" ).val(whiteBrightness);
+			$( "#brightness-slider" ).slider('value',whiteBrightness);
+		  }else{
+			$( "#brightness" ).val(colorBrightness);
+			$( "#brightness-slider" ).slider('value',colorBrightness);
+		  }
+		});
 	    $( "#brightness-slider" ).slider({
 	    	min:0,
 	    	max:25,
@@ -110,14 +128,15 @@
 	    			refreshColor();
 	    		}
 	    	},
-	    	slide: function(event, ui){
-	    		$( "#brightness" ).val(ui.value);
-	    		if(White){
-	    			refreshWhite();
-	    		}else{
-	    			refreshColor();
-	    		}
-	    	}
+	    	// maybe fun to uncomment if serialport ever works
+	    	// slide: function(event, ui){
+	    	// 	$( "#brightness" ).val(ui.value);
+	    	// 	if(White){
+	    	// 		refreshWhite();
+	    	// 	}else{
+	    	// 		refreshColor();
+	    	// 	}
+	    	// }
 	    });
 	    $( "#color-slider" ).slider({
 	    	min:0,
@@ -127,14 +146,23 @@
 	    		White = 0;
 	    		refreshColor();
 	    	},
-	    	slide: function(event, ui){
-	    		$( "#color" ).val(ui.value);
-	    		White = 0;
-	    		refreshColor();
-	    	},
+	    	// maybe fun to uncomment if serialport ever works
+	    	// slide: function(event, ui){
+	    	// 	$( "#color" ).val(ui.value);
+	    	// 	White = 0;
+	    	// 	refreshColor();
+	    	// },
 	    });
-	    $( "#brightness" ).val(0);
-  	    $( "#color" ).val(0);
+	    // socket.on('White',function(data){
+	    // 	$( "#brightness-slider" ).slider('value',data.brightness);
+	    // });
+	    // socket.on('Color',function(data){
+	    // 	$( "#color-slider" ).slider('value',data.color);
+	    // 	$( "#brightness-slider" ).slider('value',data.brightness);
+	    // });
+		
+  	    $( "#color" ).val(color);
+  	    $( "#color-slider" ).slider('value',color);
 	    if(White){
 		  refreshWhite();
 	    }else{
