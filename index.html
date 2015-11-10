@@ -51,6 +51,14 @@
 	  			<input type="text" readonly name="" id="color" class="form-control" value="0" required="required" pattern="" title="">
 	  			<br>
 		  		<div id="color-slider"></div>
+		  		<br>
+		  		<div class="text-center">
+		  			<button type="button" id="all" class="btn btn-default btn-lg groupBtn">ALL</button>
+	  				<button type="button" id="ch1" class="btn btn-default btn-lg groupBtn">CH 1</button>
+					<button type="button" id="ch2" class="btn btn-default btn-lg groupBtn">CH 2</button>
+					<button type="button" id="ch3" class="btn btn-default btn-lg groupBtn">CH 3</button>
+					<button type="button" id="ch4" class="btn btn-default btn-lg groupBtn">CH 4</button>
+	  			</div>
 			</div>
 			<div class="col-sm-3"></div>
   		</div>
@@ -68,6 +76,7 @@
 	<script type="text/javascript" charset="utf-8" async defer>
 	  var socket = io.connect();
 	  var White = 1;
+	  var currentGroup = 0;
 	  function refreshColor(){
 	  	var h = parseInt($( "#color-slider" ).slider( "value" )*(360/255)),
 	  		s = 50,
@@ -148,6 +157,36 @@
 		    return "hsl(0,0%,0%)";
 		  });
 		  socket.emit('Off');
+		});
+		$( "#all" ).click(function(){
+			currentGroup = 0;
+		  $( ".groupBtn" ).removeClass('btn-success').addClass('btn-default')
+		  $( "#all").removeClass('btn-default').addClass('btn-success')
+		  socket.emit('group',{group:currentGroup});
+		});
+		$( "#ch1" ).click(function(){
+		  currentGroup = 1;
+		  $( ".groupBtn" ).removeClass('btn-success').addClass('btn-default')
+		  $( "#ch1").removeClass('btn-default').addClass('btn-success')
+		  socket.emit('group',{group:currentGroup});
+		});
+		$( "#ch2" ).click(function(){
+		  currentGroup = 2;
+		  $( ".groupBtn" ).removeClass('btn-success').addClass('btn-default')
+		  $( "#ch2").removeClass('btn-default').addClass('btn-success')
+		  socket.emit('group',{group:currentGroup});
+		});
+		$( "#ch3" ).click(function(){
+		  currentGroup = 3;
+		  $( ".groupBtn" ).removeClass('btn-success').addClass('btn-default')
+		  $( "#ch3").removeClass('btn-default').addClass('btn-success')
+		  socket.emit('group',{group:currentGroup});
+		});
+		$( "#ch4" ).click(function(){
+		  currentGroup = 4;
+		  $( ".groupBtn" ).removeClass('btn-success').addClass('btn-default')
+		  $( "#ch4").removeClass('btn-default').addClass('btn-success')
+		  socket.emit('group',{group:currentGroup});
 		});
 	  });
   	</script>
