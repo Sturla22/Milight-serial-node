@@ -23,7 +23,8 @@ serv_io.sockets.on('connection', function (socket) {
 		color = data.color;
 		white = 0;
 		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -c "+color);
-		console.log(data.color+" "+data.brightness);
+		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -b "+data.brightness);
+		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON -c "+color);
 		serv_io.sockets.emit('Color',{
 	    	color:data.color,
 	    	brightness:data.brightness
@@ -31,8 +32,9 @@ serv_io.sockets.on('connection', function (socket) {
 	});
 	socket.on('White',function (data){
 		white = 1;
-		console.log("White: "+data.brightness);
+		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON -w");
 		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -w");
+		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -b "+data.brightness);
 		serv_io.sockets.emit('White',{
 	    	brightness:data.brightness
 	    });
@@ -43,12 +45,12 @@ serv_io.sockets.on('connection', function (socket) {
 		// buf.writeUInt8(String.fromCharCode(71,0,85), 0); //TODO: make a js object for the limitlessled API
 		// serialPort.write(buf); //writes the buffer to serial
 		exec("python /home/pi/Milight/Wrapper.py "+group+" ON");
-		console.log("On");
+		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON");
 	});
 	socket.on('Off',function (data){
 		state = 0;
 		exec("python /home/pi/Milight/Wrapper.py "+group+" OFF");
-		console.log("Off");
+		console.log("python /home/pi/Milight/Wrapper.py "+group+" OFF");
 	});
 	socket.on('group',function (data){
 		group = data.group;
