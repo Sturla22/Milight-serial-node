@@ -22,9 +22,9 @@ serv_io.sockets.on('connection', function (socket) {
 	socket.on('Color', function (data) { //makes the socket react to 'led' packets by calling this function
 		color = data.color;
 		white = 0;
-		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -c "+color);
-		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -b "+data.brightness);
-		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON -c "+color);
+		exec("python /home/pi/Milight/wrapper.py "+group+" ON -c "+color);
+		exec("python /home/pi/Milight/wrapper.py "+group+" ON -b "+data.brightness);
+		console.log("python /home/pi/Milight/wrapper.py "+group+" ON -c "+color);
 		serv_io.sockets.emit('Color',{
 	    	color:data.color,
 	    	brightness:data.brightness
@@ -32,9 +32,9 @@ serv_io.sockets.on('connection', function (socket) {
 	});
 	socket.on('White',function (data){
 		white = 1;
-		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON -w");
-		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -w");
-		exec("python /home/pi/Milight/Wrapper.py "+group+" ON -b "+data.brightness);
+		console.log("python /home/pi/Milight/wrapper.py "+group+" ON -w");
+		exec("python /home/pi/Milight/wrapper.py "+group+" ON -w");
+		exec("python /home/pi/Milight/wrapper.py "+group+" ON -b "+data.brightness);
 		serv_io.sockets.emit('White',{
 	    	brightness:data.brightness
 	    });
@@ -44,13 +44,13 @@ serv_io.sockets.on('connection', function (socket) {
 		// var buf = new Buffer(3); //creates a new 3-byte buffer
 		// buf.writeUInt8(String.fromCharCode(71,0,85), 0); //TODO: make a js object for the limitlessled API
 		// serialPort.write(buf); //writes the buffer to serial
-		exec("python /home/pi/Milight/Wrapper.py "+group+" ON");
-		console.log("python /home/pi/Milight/Wrapper.py "+group+" ON");
+		exec("python /home/pi/Milight/wrapper.py "+group+" ON");
+		console.log("python /home/pi/Milight/wrapper.py "+group+" ON");
 	});
 	socket.on('Off',function (data){
 		state = 0;
-		exec("python /home/pi/Milight/Wrapper.py "+group+" OFF");
-		console.log("python /home/pi/Milight/Wrapper.py "+group+" OFF");
+		exec("python /home/pi/Milight/wrapper.py "+group+" OFF");
+		console.log("python /home/pi/Milight/wrapper.py "+group+" OFF");
 	});
 	socket.on('group',function (data){
 		group = data.group;
