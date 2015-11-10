@@ -139,14 +139,14 @@
 	    		}
 	    	},
 	    	// maybe fun to uncomment if serialport ever works
-	    	// slide: function(event, ui){
-	    	// 	$( "#brightness" ).val(ui.value);
-	    	// 	if(White){
-	    	// 		refreshWhite();
-	    	// 	}else{
-	    	// 		refreshColor();
-	    	// 	}
-	    	// }
+	    	slide: function(event, ui){
+	    		$( "#brightness" ).val(ui.value);
+	    		// if(White){
+	    		// 	refreshWhite();
+	    		// }else{
+	    		// 	refreshColor();
+	    		// }
+	    	}
 	    });
 	    $( "#color-slider" ).slider({
 	    	min:0,
@@ -158,11 +158,11 @@
 	    		refreshColor();
 	    	},
 	    	// maybe fun to uncomment if serialport ever works
-	    	// slide: function(event, ui){
-	    	// 	$( "#color" ).val(ui.value);
-	    	// 	White = 0;
-	    	// 	refreshColor();
-	    	// },
+	    	slide: function(event, ui){
+	    		$( "#color" ).val(ui.value);
+	    		White = 0;
+	    		// refreshColor();
+	    	},
 	    });
 	    // socket.on('White',function(data){
 	    // 	$( "#brightness-slider" ).slider('value',data.brightness);
