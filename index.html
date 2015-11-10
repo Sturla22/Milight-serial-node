@@ -26,7 +26,7 @@
     <![endif]-->
     <style type="text/css" media="screen">
     	body{
-    		background-color: hsl(0,50%,50%);
+    		background-color: hsl(0,0%,50%);
     	}
     </style>
   </head>
@@ -78,7 +78,7 @@
   	  	  currentGroup = 0,
   	  	  color = 0,
   	  	  colorBrightness = 25,
-  	  	  whiteBrightness = 25;
+  	  	  whiteBrightness = 20;
 	  var socket = io.connect();
 	  function refreshColor(){
 	  	var h = parseInt($( "#color-slider" ).slider( "value" )*(360/255)),
@@ -104,22 +104,32 @@
 	  $(function() {
 	  	socket.emit('ready');
 	  	socket.on('Welcome',function(data){
-		  White = data.white;
-		  currentGroup = data.group;
-		  color = data.color;
-		  colorBrightness = data.colorBrightness;
-		  whiteBrightness = data.whiteBrightness;
-		  if(White){
-			$( "#brightness" ).val(whiteBrightness);
-			$( "#brightness-slider" ).slider('value',whiteBrightness);
-		  }else{
-			$( "#brightness" ).val(colorBrightness);
-			$( "#brightness-slider" ).slider('value',colorBrightness);
-		  }
+	  	  if(White!=data.white){
+	  	  	White = data.white;
+	  	  }
+	  	  if(currentGroup != data.group){
+
+	  	  	currentGroup = data.group;
+	  	  }
+	  	  if(color != data.color){
+	  	  	color = data.color;
+	  	  }
+	  	  if(colorBrightness != data.colorBrightness){
+	  	  	colorBrightness = data.colorBrightness;
+	  	  }
+	  	  if(whiteBrightness != data.whiteBrightness){
+	  	  	whiteBrightness = data.whiteBrightness;
+	  	  }
 		});
+		if(white){
+			var absBrightness = whiteBrightness;
+		}else{
+			var absBrightness = colorBrightness;
+		}
 	    $( "#brightness-slider" ).slider({
 	    	min:0,
 	    	max:25,
+	    	value:absBrightness,
 	    	change: function(event, ui){
 	    		$( "#brightness" ).val(ui.value);
 	    		if(White){
@@ -141,6 +151,7 @@
 	    $( "#color-slider" ).slider({
 	    	min:0,
 	    	max:255,
+	    	value:color,
 	    	change: function(event, ui){
 	    		$( "#color" ).val(ui.value);
 	    		White = 0;
@@ -160,14 +171,6 @@
 	    // 	$( "#color-slider" ).slider('value',data.color);
 	    // 	$( "#brightness-slider" ).slider('value',data.brightness);
 	    // });
-		
-  	    $( "#color" ).val(color);
-  	    $( "#color-slider" ).slider('value',color);
-	    if(White){
-		  refreshWhite();
-	    }else{
-	  	  refreshColor();
-	    }
 	    $( "#white" ).click(function(){
 		  White = 1;
 		  refreshWhite();
@@ -216,6 +219,9 @@
 		  $( "#ch4").removeClass('btn-default').addClass('btn-success')
 		  socket.emit('group',{group:currentGroup});
 		});
+	  });
+	  $(window).on('beforeunload', function(){
+	    socket.close();
 	  });
   	</script>
   </body>
