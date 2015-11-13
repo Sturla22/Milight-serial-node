@@ -1,4 +1,4 @@
-var state = {White:1,currentGroup:0,color:0,colorBrightness:25,whiteBrightness:25,groupState:[true,true,true,true]};
+var state = {White:1,currentGroup:0,color:0,colorBrightness:25,whiteBrightness:25,groupState:[true,false,false,false]};
 var socket = io.connect();
 
 function adjustColor(color){
@@ -42,9 +42,9 @@ function refreshWhite(em) {
 $(function() {
     socket.emit('ready');
     socket.on('Welcome', function(data) {
-    	console.log(data);
         if (state.White != data.White) {
             state.White = data.White;
+            refreshWhite(false);
         }
         if (state.currentGroup != data.group) {
             state.currentGroup = data.group;
@@ -59,28 +59,35 @@ $(function() {
         };
         if (state.color != data.color) {
             state.color = data.color;
+            refreshColor(false);
         }
         if (state.colorBrightness != data.colorBrightness) {
             state.colorBrightness = data.colorBrightness;
+            refreshColor(false);
         }
         if (state.whiteBrightness != data.whiteBrightness) {
             state.whiteBrightness = data.whiteBrightness;
+            refreshWhite(false);
         }
     });
+	if(state.White){
+		var absBrightness = state.whiteBrightness;
+	}else{
+		var absBrightness = state.colorBrightness;
+	}
     $("#brightness-slider").slider({
         min: 0,
         max: 25,
-        value: 25,
+        value: absBrightness,
         change: function(event, ui) {
+        	$("#brightness").val(ui.value);
         	if(event.originalEvent){
-	            $("#brightness").val(ui.value);
 	            if (state.White) {
 	                refreshWhite(true);
 	            } else {
 	                refreshColor(true);
 	            }
 	        }else{
-	        	$("#brightness").val(ui.value);
 	            if (state.White) {
 	                refreshWhite(false);
 	            } else {
@@ -101,7 +108,7 @@ $(function() {
     $("#color-slider").slider({
         min: 0,
         max: 255,
-        value: 0,
+        value: state.color,
         change: function(event, ui) {
         	if(event.originalEvent){
 	        	$("#color").val(ui.value);
@@ -114,7 +121,6 @@ $(function() {
         	}
 
         },
-        // maybe fun to uncomment if serialport ever works
         slide: function(event, ui) {
             $("#color").val(ui.value);
             state.White = 0;
@@ -141,18 +147,19 @@ $(function() {
         state.groupState[state.currentGroup] = false;
         stateUpdate()
     });
-    function clicked(grp){
+    function clicked(evt){
+    	grp = evt.data.grp;
     	groups = ["#all","#ch1","#ch2","#ch3","#ch4"]
         $(".groupBtn").removeClass('btn-success').addClass('btn-default')
         $(groups[grp]).removeClass('btn-default').addClass('btn-success')
         state.currentGroup = grp;
         stateUpdate();
     }
-    $("#all").click(0,clicked);
-    $("#ch1").click(1,clicked);
-    $("#ch2").click(2,clicked);
-    $("#ch3").click(3,clicked);
-    $("#ch4").click(4,clicked);
+    $("#all").click({grp:0},clicked);
+    $("#ch1").click({grp:1},clicked);
+    $("#ch2").click({grp:2},clicked);
+    $("#ch3").click({grp:3},clicked);
+    $("#ch4").click({grp:4},clicked);
 });
 $(window).on('beforeunload', function() {
     socket.close();

@@ -22,25 +22,23 @@ var serv_io = io.listen(server);
 server.listen(8080);
 app.use(express.static('.'))
 
-var state = {White:1,currentGroup:0,color:0,colorBrightness:25,whiteBrightness:25,groupState:[true,true,true,true]};
+var state = {White:1,currentGroup:0,color:0,colorBrightness:25,whiteBrightness:25,groupState:[true,false,false,false]};
 
 
 
 function colorUpdate(data){
     exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " ON -c " + data.color);
     exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " ON -b " + data.colorBrightness);
-    console.log(new Date().toString()+" c change");
 }
 function whiteUpdate(data){
     exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " ON -w");
     exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " ON -b " + data.whiteBrightness);
-    console.log(new Date().toString()+" b change");
 }
 function onUpdate(data){
     exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " ON");
 }
 function offUpdate(data){
-    exec("python /home/pi/Milight/wrapper.py " + state.currentGroup + " OFF");
+    exec("python /home/pi/Milight/wrapper.py " + data.currentGroup + " OFF");
 }
 
 serv_io.sockets.on('connection', function(socket) {
@@ -49,6 +47,7 @@ serv_io.sockets.on('connection', function(socket) {
 		state = data;
 		socket.emit('update-state', state);
 		client.set("state",JSON.stringify(state));
+		console.log(state);
 	}
 
     socket.on('ready', function() {
@@ -69,12 +68,8 @@ serv_io.sockets.on('connection', function(socket) {
     	if(state.color != data.color){
     		colorUpdate(data);
     	}
-    	if(state.groupState!=data.groupState){
-    		if(data.groupState[data.currentGroup]){
-    			onUpdate(data);
-    		}else{
-    			offUpdate(data);
-    		}
+    	if(state.groupState != data.groupState){
+    		state.groupState = data.groupState;
     	}
     	stateUpdate(data)
     });
