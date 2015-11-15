@@ -1,6 +1,6 @@
 var state = {White:1,currentGroup:0,color:0,colorBrightness:25,whiteBrightness:25,groupState:[true,false,false,false]};
 var socket = io.connect();
-
+console.log(state.currentGroup)
 function adjustColor(color){
 	var ADJ = 30;
 	if(color - ADJ < 360){
@@ -18,6 +18,10 @@ function refreshColor(em) {
     var h = adjustColor(parseInt($("#color-slider").slider("value") * (360 / 255))),
         s = 50,
         l = parseInt($("#brightness-slider").slider("value") * (50 / 25) + 10);
+    if(state.White=1){
+    	l=state.colorBrightness;
+    	state.White = 0;
+    }
     $("body").css("background-color", function() {
         return "hsl(" + h + "," + s + "%," + l + "%)";
     });
@@ -31,9 +35,13 @@ function refreshColor(em) {
 
 function refreshWhite(em) {
     var l = parseInt($("#brightness-slider").slider("value") * (50 / 25) + 10);
+    if(!state.White){
+    	l =state.whiteBrightness;
+    }
     $("body").css("background-color", function() {
         return "hsl(0,0%," + l + "%)";
     });
+    state.whiteBrightness = $("#brightness-slider").slider("value");
     state.White = 1
     if(em){
 	    stateUpdate()
@@ -112,23 +120,19 @@ $(function() {
         change: function(event, ui) {
         	if(event.originalEvent){
 	        	$("#color").val(ui.value);
-	            state.White = 0;
 	            refreshColor(true);
         	}else{
 				$("#color").val(ui.value);
-	            state.White = 0;
 	            refreshColor(false);
         	}
 
         },
         slide: function(event, ui) {
             $("#color").val(ui.value);
-            state.White = 0;
             refreshColor(false);
         },
     });
     $("#white").click(function() {
-        state.White = 1;
         refreshWhite(true);
     });
     $("#on").click(function() {
