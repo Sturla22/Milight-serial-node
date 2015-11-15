@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Milight</title>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+		<!-- JQueryUI style -->
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+	<style type="text/css" media="screen">
+		body{
+			background-color: hsl(0,0%,5%);
+		}
+	</style>
+</head>
+<body>
+	<div class="container text-center">
+		<h1>Milight Control</h1>
+		<div>
+			<button type="button" class="btn btn-default btn-lg" id="white">White</button>
+			<button type="button" class="btn btn-default btn-lg" id="pwr">I/O</button>
+		</div>
+		<label>Brightness</label>
+		<div id="brightness"></div>
+		<br>
+		<label>Color</label>
+		<div id="color"></div>
+		<br>
+		<button type="button" class="btn btn-default groupBtn" id="b0">0</button>
+		<button type="button" class="btn btn-default groupBtn" id="b1">1</button>
+		<button type="button" class="btn btn-default groupBtn" id="b2">2</button>
+		<button type="button" class="btn btn-default groupBtn" id="b3">3</button>
+		<button type="button" class="btn btn-default groupBtn" id="b4">4</button>
+		<div id="info"></div>
+	</div>
+<!-- js external -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+	<script src="https://cdn.socket.io/socket.io-1.0.0.js"></script>
+<!-- js mine -->
+	<script src="stateobj.js" type="text/javascript" charset="utf-8"></script>
+	<script src="frontend.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
