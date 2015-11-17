@@ -4,8 +4,8 @@ var socket = io.connect();
 
 $(function() {
     function adjustColor(color) {
-        var ADJ = 30;
-        if (color - ADJ < 360) {
+        var ADJ = -10;
+        if (color + ADJ < 360) {
             return color + (180 + ADJ);
         } else {
             return color - ADJ;
