@@ -25,7 +25,7 @@ $(function() {
             } else {
                 s = 0;
             }
-            return "hsl(" + h + "," + s + "%," + l + "%)";
+            return "hsl(" + -h + "," + s + "%," + l + "%)";
         });
         $("#info").html(state.groups[state.currentGroup].toString());
     }
