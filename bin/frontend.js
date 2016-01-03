@@ -1,7 +1,5 @@
 var state = new state();
 var socket = io.connect();
-
-
 $(function() {
     function adjustColor(color) {
         var ADJ = -10;
@@ -48,7 +46,6 @@ $(function() {
             }
             $("#color").slider("value", state.getColor());
             $("#brightness").slider("value", state.getBrightness());
-            // send serial command and update db
             socket.emit('group', state);
         });
     }
@@ -61,14 +58,12 @@ $(function() {
         state.toggleWhite();
         refreshContent();
         $("#brightness").slider("value", state.getBrightness());
-        // send serial command and update db
         socket.emit('white', state);
     });
     $("#pwr").click(function() {
         $(this).toggleClass('btn-default').toggleClass('btn-success')
         state.togglePower();
         refreshContent();
-        // send serial command and update db
         socket.emit('power', state);
     });
 
@@ -79,7 +74,6 @@ $(function() {
             if (evt.originalEvent) {
                 state.setBrightness(ui.value);
                 refreshContent();
-                // send serial command and update db
                 socket.emit('brightness', state);
             }
         },
@@ -97,7 +91,6 @@ $(function() {
             if (evt.originalEvent) {
                 state.setColor(ui.value);
                 refreshContent();
-                // send serial command and update db
                 socket.emit('color', state);
             }
         },
@@ -109,7 +102,12 @@ $(function() {
         }
     });
     socket.on('update', function(data) {
-        state = data;
+        data = JSON.parse(data);
+        for (var i in data.groups){
+            group = data.groups[i];
+            state.update(i,group.on,group.color,group.white,group.whiteBrightness,group.colorBrightness);
+        }
+        state.currentGroup = data.currentGroup;
         $(".groupBtn").removeClass('btn-success').addClass('btn-default');
         $("#b" + state.currentGroup).removeClass('btn-default').addClass('btn-success');
         if (state.isWhite()) {
@@ -124,6 +122,7 @@ $(function() {
         }
         $("#color").slider("value", state.getColor());
         $("#brightness").slider("value", state.getBrightness());
+        refreshContent();
     });
 });
 $(window).on('beforeunload', function() {

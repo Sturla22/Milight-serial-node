@@ -50,7 +50,7 @@ function updateState(data){
 	client.set("state",JSON.stringify(state));
 }
 serv_io.sockets.on('connection',function(socket){
-	// socket.emit('update',state)
+	socket.emit('update',JSON.stringify(state));
 	socket.on('group',function(data){
 		updateState(data);
 		exec("python /home/pi/Milight/wrapper.py " + state.currentGroup + " ON");
