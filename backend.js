@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var http = require('http');
 var io = require('socket.io');
 var exec = require('child_process').exec
@@ -7,23 +8,75 @@ var client = redis.createClient(6379, 'localhost', {no_ready_check: true});
 client.auth('password', function (err) {
     if (err) throw err;
 });
-var state = {};
+var Group = function(on,color,white,whiteBrightness,colorBrightness){
+	this.on = on;
+	this.color = color;
+	this.white = white;
+	this.whiteBrightness = whiteBrightness;
+	this.colorBrightness = colorBrightness;
+}
+
+var State = function(){
+	this.groups = [
+		new Group(1,0,1,25,25),
+		new Group(1,0,1,25,25),
+		new Group(1,0,1,25,25),
+		new Group(1,0,1,25,25),
+		new Group(1,0,1,25,25)
+	]
+	this.currentGroup = 0;
+	this.getColor = function(){
+		if(this.groups[this.currentGroup].white){
+			return -1;
+		}else{
+			return this.groups[this.currentGroup].color;
+		}
+	}
+	this.getBrightness = function(){
+		var group = this.groups[this.currentGroup]
+		if(group.white){
+			return group.whiteBrightness;
+		}else{
+			return group.colorBrightness;
+		}
+	}
+	this.isOn = function(){
+		return this.groups[this.currentGroup].on;
+	}
+	this.isWhite = function(){
+		return this.groups[this.currentGroup].white;
+	}
+}
+var state = new State();
+
 client.on('connect', function() {
     console.log('Connected to Redis');
     client.get("state",function(err,data){
 		if(!data){
 			console.log("Could not get data from Redis")
 		}else{
-			var state = JSON.parse( data.toString() );
+			state = JSON.parse( data.toString() );
 		}
 	});
 });
 
 var app = express();
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static(__dirname+'/bin/'));
 var server = http.createServer(app);
 var serv_io = io.listen(server);
 server.listen(8080);
-app.use(express.static('./bin/'));
+app.post('/:group',function(req,res){
+	var p = req.body;
+	state.groups[req.params.group] = JSON.parse(p)
+	res.json(p);
+});
+app.get('/:group',function(req,res){
+	var g = state.groups[req.params.group];
+	var obj = {data:g};
+	res.json(obj)
+})
+
 function updateState(data){
 	state = data;
 	state.getColor = function(){
