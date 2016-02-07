@@ -68,7 +68,10 @@ var serv_io = io.listen(server);
 server.listen(8080);
 app.post('/:group',function(req,res){
 	var p = req.body;
-	state.groups[req.params.group] = JSON.parse(p)
+	for(key in p){
+		state.groups[req.params.group][key] = p[key]
+	}
+	updateState(state);
 	res.json(p);
 });
 app.get('/:group',function(req,res){
