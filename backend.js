@@ -68,11 +68,23 @@ var serv_io = io.listen(server);
 server.listen(8080);
 app.post('/:group',function(req,res){
 	var p = req.body;
+	console.log(p);
 	for(key in p){
 		state.groups[req.params.group][key] = p[key]
 	}
 	updateState(state);
-	res.json(p);
+	if(p.on){
+		exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON")
+		if(p.white){
+			exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -w");
+		}else{
+			exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -c" + p.color);
+		}
+		exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -b " + p.brightness);
+	}else{
+		exec("python /home/pi/Milight/wrapper.py " + req.params.group + " OFF")
+	}
+	res.json(state);
 });
 app.get('/:group',function(req,res){
 	var g = state.groups[req.params.group];
