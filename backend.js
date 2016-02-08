@@ -63,6 +63,12 @@ client.on('connect', function() {
 var app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname+'/bin/'));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 var server = http.createServer(app);
 var serv_io = io.listen(server);
 server.listen(8080);
