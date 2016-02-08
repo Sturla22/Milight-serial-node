@@ -74,17 +74,16 @@ var serv_io = io.listen(server);
 server.listen(8080);
 app.post('/:group',function(req,res){
 	var p = req.body;
-	console.log(p);
 	for(key in p){
-		state.groups[req.params.group][key] = p[key]
+		state.groups[req.params.group][key] = p[key];
 	}
 	updateState(state);
-	if(p.on){
+	if(p.on=='true'){
 		exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON")
-		if(p.white){
+		if(p.white=='true'){
 			exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -w");
 		}else{
-			exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -c" + p.color);
+			exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -c " + p.color);
 		}
 		exec("python /home/pi/Milight/wrapper.py " + req.params.group + " ON -b " + p.brightness);
 	}else{
@@ -134,7 +133,7 @@ serv_io.sockets.on('connection',function(socket){
 		if(state.isWhite()){
 			exec("python /home/pi/Milight/wrapper.py " + state.currentGroup + " ON -w");
 		}else{
-			exec("python /home/pi/Milight/wrapper.py " + state.currentGroup + " ON -c" + state.getColor());
+			exec("python /home/pi/Milight/wrapper.py " + state.currentGroup + " ON -c " + state.getColor());
 		}
 	});
 	socket.on('brightness',function(data){
